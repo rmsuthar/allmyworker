@@ -1,0 +1,14 @@
+name = "allmyworker"
+type = "webpack"
+
+account_id = "4af9d9d35deae8ad0716390fe20cdc7c"
+workers_dev = true
+route = ""
+zone_id = ""
+compatibility_date = "2022-03-02"
+
+[build]
+command = "npm run build"
+
+[build.upload]
+format = "service-worker"
