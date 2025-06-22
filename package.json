@@ -13,10 +13,10 @@
   "license": "MIT",
   "devDependencies": {
     "prettier": "^1.18.2",
-    "worktop.build": "^0.0.5"
+    "worktop": "^0.7.3",
+    "worktop.build": "^0.0.0"
   },
   "dependencies": {
-    "faunadb": "^4.5.2",
-    "worktop": "^0.7.3"
+    "faunadb": "^4.5.2"
   }
 }

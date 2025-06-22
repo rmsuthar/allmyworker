@@ -1,4 +1,5 @@
-const langs = {
+// index.js
+var langs = {
   "AD": {
     "name": "Andorra",
     "nativeName": "Andorra",
@@ -4050,179 +4051,140 @@ const langs = {
       }
     ]
   }
-}
-
-const coreHeaders = {
-  'Access-Control-Allow-Headers': '*',
-  'Access-Control-Allow-Origin': '*',
-  'cross-origin-resource-policy': 'cross-origin',
-  'timing-allow-origin': '*',
-  'Access-Control-Allow-Methods': 'GET,HEAD,POST,OPTIONS',
-  'Access-Control-Max-Age': '86400',
-}
-
-addEventListener('fetch', event => {
-  event.respondWith(handleRequest(event.request))
-})
-/**
- * Respond with hello worker text
- * @param {Request} request
- */
-
+};
+var coreHeaders = {
+  "Access-Control-Allow-Headers": "*",
+  "Access-Control-Allow-Origin": "*",
+  "cross-origin-resource-policy": "cross-origin",
+  "timing-allow-origin": "*",
+  "Access-Control-Allow-Methods": "GET,HEAD,POST,OPTIONS",
+  "Access-Control-Max-Age": "86400"
+};
+addEventListener("fetch", (event) => {
+  event.respondWith(handleRequest(event.request));
+});
 async function handleRequest(request) {
-  const url = new URL(request.url)
-  // const cache = caches.default
-  // await cache.match(request)
-  const { headers } = request
-
-  if (request.method == 'OPTIONS') {
-    return new Response('OK', { headers: coreHeaders })
+  const url = new URL(request.url);
+  const { headers } = request;
+  if (request.method == "OPTIONS") {
+    return new Response("OK", { headers: coreHeaders });
   }
-
-  console.log(new Map(request.headers))
-  console.log(JSON.stringify([...request.headers]))
-  function getDomain(url) {
-    const parsedUrl = new URL(url)
-    return parsedUrl.hostname
+  console.log(new Map(request.headers));
+  console.log(JSON.stringify([...request.headers]));
+  function getDomain(url2) {
+    const parsedUrl = new URL(url2);
+    return parsedUrl.hostname;
   }
-  const userAgent = request.headers.get('User-Agent') || ''
-  if (userAgent.includes('bot')) {
-    return new Response('Block User Agent containing bot', { status: 403 })
+  const userAgent = request.headers.get("User-Agent") || "";
+  if (userAgent.includes("bot")) {
+    return new Response("Block User Agent containing bot", { status: 403 });
   }
-
-  const acceptLanguageHeader = headers.get('Accept-Language')
-  const langCodes = acceptLanguageHeader
-    .split(',')
-    .map(lang => lang.split(';')[0]);
+  const acceptLanguageHeader = headers.get("Accept-Language");
+  const langCodes = acceptLanguageHeader.split(",").map((lang) => lang.split(";")[0]);
   const langCode = langCodes[0];
-
   const allowedDomains = [
-    'rmsuthar.github.io',
-    'allmyworker.rsuthar.workers.dev',
-    'allmy.work',
-    '127.0.0.1',
-    'w3agility.com',
-  ]
-  const referer = request.headers.get('Referer') || getDomain(request.url)
-
-  if (!allowedDomains.some(domain => referer && referer.includes(domain))) {
-    return new Response('Unauthorized', { status: 401 })
+    "rmsuthar.github.io",
+    "allmyworker.rsuthar.workers.dev",
+    "allmy.work",
+    "127.0.0.1",
+    "w3agility.com"
+  ];
+  const referer = request.headers.get("Referer") || getDomain(request.url);
+  if (!allowedDomains.some((domain) => referer && referer.includes(domain))) {
+    return new Response("Unauthorized", { status: 401 });
   }
-
   function getWeekdays(lang) {
-    const weekdays = []
-    const date = new Date()
+    const weekdays = [];
+    const date = new Date();
     for (let i = 0; i < 7; i++) {
-      date.setDate(i + 1)
-      const weekday = date.toLocaleDateString(lang, { weekday: 'long' })
-      weekdays.push(weekday)
+      date.setDate(i + 1);
+      const weekday = date.toLocaleDateString(lang, { weekday: "long" });
+      weekdays.push(weekday);
     }
-    return weekdays
+    return weekdays;
   }
   function getMonths(lang) {
-    const months = []
-    const date = new Date()
-    const options = { month: 'long' }
+    const months = [];
+    const date = new Date();
+    const options = { month: "long" };
     for (let i = 0; i < 12; i++) {
-      date.setMonth(i)
-      months.push(date.toLocaleDateString(lang, options))
+      date.setMonth(i);
+      months.push(date.toLocaleDateString(lang, options));
     }
-    return months
+    return months;
   }
-
-  const data = await request.cf
-
+  const data = await request.cf;
   let cf = (({
     city,
     continent,
     country,
-    // latitude,
-    // longitude,
     region,
     regionCode,
-    timezone,
+    timezone
   }) => ({
     city,
     continent,
     country,
-    // latitude,
-    // longitude,
     region,
     regionCode,
-    timezone,
-  }))(data)
+    timezone
+  }))(data);
   cf = {
     ...cf,
     ...langs[cf.country],
     langCode,
     weekdays: getWeekdays(langCode),
     months: getMonths(langCode),
-    isChina: langs[cf.country].languages.indexOf('zh') >= 0,
-    isGDPR: cf.continent == 'EU',
-    isBRLGPD: cf.country == 'BR',
-    isCCPA: cf.regionCode == 'CA',
-    isPIPEDA: cf.country === 'CA',
-    isMXLGPD: cf.country === 'MX',
-  }
-
-  /*  const { fmt } = await request.json();
-  console.log(JSON.stringify(fmt));*/
-  /*const cacheKey = 'cdata';
-  const cache = await getCache(cacheKey);
-  
-  console.log(url.pathname)*/
-
-  const someCustomKey = `https://${url.hostname}${url.pathname}`
-
-  if (url.pathname == '/api/client') {
+    isChina: langs[cf.country].languages.indexOf("zh") >= 0,
+    isGDPR: cf.continent == "EU",
+    isBRLGPD: cf.country == "BR",
+    isCCPA: cf.regionCode == "CA",
+    isPIPEDA: cf.country === "CA",
+    isMXLGPD: cf.country === "MX"
+  };
+  const someCustomKey = `https://${url.hostname}${url.pathname}`;
+  if (url.pathname == "/api/client") {
     return new Response(JSON.stringify(cf, null, 2), {
       headers: {
-        'content-type': 'application/json;charset=UTF-8',
-        'Cache-Control': 'max-age=1500',
-        ...coreHeaders,
+        "content-type": "application/json;charset=UTF-8",
+        "Cache-Control": "max-age=1500",
+        ...coreHeaders
       },
       cf: {
-        // Always cache this fetch regardless of content type
-        // for a max of 5 seconds before revalidating the resource
         cacheTtl: 5,
         cacheEverything: true,
-        //Enterprise only feature, see Cache API for other plans
-        cacheKey: someCustomKey,
-      },
-    })
-  } else if (url.pathname == '/api/client.js') {
-    let df = `function cfData(){ return ${JSON.stringify(cf)}};`
-
+        cacheKey: someCustomKey
+      }
+    });
+  } else if (url.pathname == "/api/client.js") {
+    let df = `function cfData(){ return ${JSON.stringify(cf)}};`;
     return new Response(df, {
       headers: {
-        'content-type': 'application/javascript;charset=UTF-8',
-        'accept-encoding': 'gzip',
-        'Cache-Control': 'max-age=1500',
-        ...coreHeaders,
+        "content-type": "application/javascript;charset=UTF-8",
+        "accept-encoding": "gzip",
+        "Cache-Control": "max-age=1500",
+        ...coreHeaders
       },
       cf: {
-        // Always cache this fetch regardless of content type
-        // for a max of 5 seconds before revalidating the resource
         cacheTtl: 5,
         cacheEverything: true,
-        //Enterprise only feature, see Cache API for other plans
-        cacheKey: someCustomKey,
-      },
-    })
+        cacheKey: someCustomKey
+      }
+    });
   } else {
     const init = {
       headers: {
-        'content-type': 'text/html;charset=UTF-8',
-        'accept-encoding': 'gzip',
+        "content-type": "text/html;charset=UTF-8",
+        "accept-encoding": "gzip"
       },
-      status: 503,
-    }
-    return new Response('OK', {
+      status: 503
+    };
+    return new Response("OK", {
       headers: {
-        'content-type': 'text/html;charset=UTF-8',
-        'accept-encoding': 'gzip',
-        ...coreHeaders,
-      },
-    })
+        "content-type": "text/html;charset=UTF-8",
+        "accept-encoding": "gzip",
+        ...coreHeaders
+      }
+    });
   }
 }
