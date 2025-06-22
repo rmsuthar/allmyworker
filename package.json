@@ -14,7 +14,8 @@
   "devDependencies": {
     "prettier": "^1.18.2",
     "worktop": "^0.7.3",
-    "worktop.build": "^0.0.0"
+    "worktop.build": "^0.0.0",
+    "wrangler": "^4.20.5"
   },
   "dependencies": {
     "faunadb": "^4.5.2"
